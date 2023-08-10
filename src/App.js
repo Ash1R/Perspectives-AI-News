@@ -19,6 +19,7 @@ import Analysis from "./analysis";
 import OpinionatednessCalculator from "./opinionator";
 import BlogPost from "./BlogPost";
 import SubmitProjectForm from "./submit";
+import About from "./About";
 const App = () => {
   return (
     <Routes>
@@ -28,6 +29,7 @@ const App = () => {
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/post" element={<BlogPost />} />
       <Route path="/submit" element={<SubmitProjectForm />} />
+      <Route path="/about" element={<About />} />
     </Routes>
   );
 };
