@@ -39,7 +39,10 @@ const HamburgerMenu = (props) => {
             {" "}
             <Menu.Item position="left" header as="h3" name="Blog" />
           </Link>
-          <Menu.Item position="left" header as="h3" name="About Us" />
+          <Link to="/about">
+            {" "}
+            <Menu.Item position="left" header as="h3" name="About Us" />
+          </Link>
           <Link to="/submit">
             <Menu.Item
               position="left"
