@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Form,
   Button,
@@ -11,11 +11,23 @@ import "./SubmitProjectForm.css";
 import HamburgerMenu from "./hamenu";
 
 function SubmitProjectForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [projectLink, setProjectLink] = useState("");
+
   const onSubmit = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const data = Object.fromEntries(formData);
+    const data = {
+      Name: name,
+      Email: email,
+      ProjectLink: projectLink,
+    };
     console.log(data);
+
+    // Clear state variables
+    setName("");
+    setEmail("");
+    setProjectLink("");
   };
 
   return (
@@ -38,16 +50,32 @@ function SubmitProjectForm() {
           <Form className="submit-form" onSubmit={onSubmit}>
             <Form.Field>
               <label>Name*</label>
-              <input name="Name" placeholder="Name" type="text" required />
+              <input
+                name="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Name"
+                type="text"
+                required
+              />
             </Form.Field>
             <Form.Field>
               <label>Email*</label>
-              <input name="Email" placeholder="Email" type="email" required />
+              <input
+                name="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                type="email"
+                required
+              />
             </Form.Field>
             <Form.Field>
               <label>Project Link, Document, or Site</label>
               <input
                 name="ProjectLink"
+                value={projectLink}
+                onChange={(e) => setProjectLink(e.target.value)}
                 placeholder="Project Link"
                 type="text"
                 required
@@ -58,7 +86,7 @@ function SubmitProjectForm() {
           <p>
             Check out our code on
             <a
-              href="https://github.com/yourusername/your-repo"
+              href="https://github.com/Ash1R/Perspectives/"
               target="_blank"
               rel="noopener noreferrer"
             >
