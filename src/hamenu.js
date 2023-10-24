@@ -51,6 +51,10 @@ const HamburgerMenu = (props) => {
               name="submit your project or feedback"
             />
           </Link>
+
+          <Menu.Item position="left" header as="h3" name="please donatw">
+            Please donate
+          </Menu.Item>
         </Menu.Menu>
       )}
     </Menu>

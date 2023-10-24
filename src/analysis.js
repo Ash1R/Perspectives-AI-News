@@ -33,7 +33,7 @@ const Analysis = () => {
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({ keyword: "filler" });
   const [categorizedData, setCategorizedData] = useState([]);
 
   const truncateDescription = (description, maxLength) => {
@@ -116,90 +116,70 @@ const Analysis = () => {
 
   return (
     <Container>
-      <Header style={{ textAlign: "center", marginTop: "5px" }} size="huge">
+      <Header textAlign="center" style={{ marginTop: "20px" }} size="huge">
         Perspectives
       </Header>
-      <HamburgerMenu></HamburgerMenu>
-      <Divider></Divider>
-      <Divider hidden></Divider>
+      <HamburgerMenu />
+      <Divider />
 
-      <Card style={{ margin: "auto" }}>
-        <Image wrapped ui={false} />
-        <Card.Content>
-          <Card.Header>{"hi"}</Card.Header>
-          <Card.Description>{"hhhhhhhhhh"}</Card.Description>
-        </Card.Content>
-      </Card>
-      <Divider hidden></Divider>
-      <Divider hidden></Divider>
-      <Divider hidden></Divider>
-
-      <Header style={{ margin: "auto" }} as="h2">
-        More Perspectives
+      <Header style={{ textAlign: "center" }} as="h2">
+        The Algorithm Detected a Topic: {data["keyword"]}
       </Header>
-      <Divider hidden></Divider>
-      <Divider hidden></Divider>
-      <Grid columns={3} stackable>
-        <Grid.Column>
-          <Segment>
-            <Header>Opinionated</Header>
-            {categorizedData["Opinionated"] ? (
-              categorizedData["Opinionated"].map((newsItem, index) => (
-                <Card key={index} style={{ margin: "auto" }}>
-                  <Image src={newsItem["value"]["urlToImage"]} />
-                  <Card.Content>
-                    <Card.Header>{newsItem["value"]["title"]}</Card.Header>
-                    <Card.Description>
-                      {truncateDescription(newsItem["value"]["description"])}
-                    </Card.Description>
-                  </Card.Content>
-                </Card>
-              ))
-            ) : (
-              <Loader active>Loading...</Loader>
-            )}
-          </Segment>
-        </Grid.Column>
-        <Grid.Column>
-          <Segment>
-            <Header>Mildly Opinionated</Header>
-            {categorizedData["Mildly Opinionated"] ? (
-              categorizedData["Mildly Opinionated"].map((newsItem, index) => (
-                <Card key={index} style={{ margin: "auto" }}>
-                  <Image src={newsItem["value"]["urlToImage"]} />
-                  <Card.Content>
-                    <Card.Header>{newsItem["value"]["title"]}</Card.Header>
-                    <Card.Description>
-                      {truncateDescription(newsItem["value"]["description"])}
-                    </Card.Description>
-                  </Card.Content>
-                </Card>
-              ))
-            ) : (
-              <Loader active>Loading...</Loader>
-            )}
-          </Segment>
-        </Grid.Column>
-        <Grid.Column>
-          <Segment>
-            <Header>Unopinionated</Header>
-            {categorizedData["Unopinionated"] ? (
-              categorizedData["Unopinionated"].map((newsItem, index) => (
-                <Card key={index} style={{ margin: "auto" }}>
-                  <Image src={newsItem["value"]["urlToImage"]} />
-                  <Card.Content>
-                    <Card.Header>{newsItem["value"]["title"]}</Card.Header>
-                    <Card.Description>
-                      {truncateDescription(newsItem["value"]["description"])}
-                    </Card.Description>
-                  </Card.Content>
-                </Card>
-              ))
-            ) : (
-              <Loader active>Loading...</Loader>
-            )}
-          </Segment>
-        </Grid.Column>
+
+      <Header style={{ textAlign: "center", margin: "20px 0" }} as="h4">
+        Here Are the Different Perspectives
+      </Header>
+
+      <Divider hidden />
+
+      <Grid columns={4} stackable centered>
+        {[
+          "Opinionated",
+          "Mildly Opinionated",
+          "Unopinionated",
+          "Unable to categorize",
+        ].map((category) => (
+          <Grid.Column key={category} style={{ maxWidth: "400px" }}>
+            <Segment>
+              <Header textAlign="center">{category}</Header>
+
+              {categorizedData[category] ? (
+                categorizedData[category].map((newsItem, index) => (
+                  <Container key={index}>
+                    <Divider />
+                    <h4 style={{ color: "gray" }}>
+                      Opinion score: {newsItem["key"]}
+                    </h4>
+                    <Divider hidden />
+                    <a
+                      href={newsItem["value"]["url"]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Card style={{ margin: "auto", width: "100%" }}>
+                        <Image
+                          src={newsItem["value"]["urlToImage"]}
+                          wrapped
+                          ui={false}
+                        />
+                        <Card.Content>
+                          <Card.Header>
+                            {newsItem["value"]["title"]}
+                          </Card.Header>
+                          <Card.Description>
+                            {newsItem["value"]["description"]}
+                          </Card.Description>
+                        </Card.Content>
+                      </Card>
+                    </a>
+                  </Container>
+                ))
+              ) : (
+                <Loader active>Loading...</Loader>
+              )}
+            </Segment>
+          </Grid.Column>
+        ))}
       </Grid>
     </Container>
   );
