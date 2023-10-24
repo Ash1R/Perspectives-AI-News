@@ -20,6 +20,7 @@ import OpinionatednessCalculator from "./opinionator";
 import BlogPost from "./BlogPost";
 import SubmitProjectForm from "./submit";
 import About from "./About";
+import Navbar from "./Navbar";
 const App = () => {
   return (
     <Routes>

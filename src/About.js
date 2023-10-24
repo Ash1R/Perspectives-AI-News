@@ -8,7 +8,7 @@ import {
   Divider,
 } from "semantic-ui-react";
 import "./SubmitProjectForm.css";
-import HamburgerMenu from "./hamenu";
+import Navbar from "./Navbar";
 
 function About() {
   return (
@@ -16,7 +16,7 @@ function About() {
       <Header style={{ textAlign: "center", marginTop: "5px" }} size="huge">
         Perspectives
       </Header>
-      <HamburgerMenu></HamburgerMenu>
+      <Navbar activeItem="about" />
       <Divider></Divider>
       <Divider hidden></Divider>
       <center>

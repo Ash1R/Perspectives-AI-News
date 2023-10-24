@@ -12,7 +12,6 @@ import {
   Button,
   Card,
 } from "semantic-ui-react";
-import HamburgerMenu from "./hamenu";
 import {
   getFirestore,
   setDoc,
@@ -24,6 +23,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import "./styles.css"; // Import the CSS file you created
+import Navbar from "./Navbar";
 
 const App = () => {
   const [value, setValue] = useState("United States");
@@ -314,7 +314,7 @@ const App = () => {
         <Header textAlign="center" size="huge">
           Perspectives
         </Header>
-        <HamburgerMenu />
+        <Navbar activeItem="home" />
         <Divider />
 
         <Grid columns={3} stackable>

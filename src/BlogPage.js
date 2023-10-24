@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Container, Card, Header, Divider } from "semantic-ui-react";
 import BlogPost from "./BlogPost";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import HamburgerMenu from "./hamenu";
 import {
   getFirestore,
   setDoc,
@@ -13,6 +12,7 @@ import {
   getDocs,
   orderBy,
 } from "firebase/firestore";
+import Navbar from "./Navbar";
 
 const BlogPage = () => {
   const [blogPosts, setBlogPosts] = useState([]);
@@ -36,7 +36,7 @@ const BlogPage = () => {
       <Header style={{ textAlign: "center", marginTop: "5px" }} size="huge">
         Perspectives
       </Header>
-      <HamburgerMenu></HamburgerMenu>
+      <Navbar activeItem="blog" />
 
       <Divider></Divider>
       <Header as="h1" textAlign="center">

@@ -25,8 +25,8 @@ import {
   getDocs,
   orderBy,
 } from "firebase/firestore";
-import HamburgerMenu from "./hamenu";
 import { initializeApp } from "firebase/app";
+import Navbar from "./Navbar";
 
 const Analysis = () => {
   const location = useLocation();
@@ -119,7 +119,7 @@ const Analysis = () => {
       <Header textAlign="center" style={{ marginTop: "20px" }} size="huge">
         Perspectives
       </Header>
-      <HamburgerMenu />
+      <Navbar />
       <Divider />
 
       <Header style={{ textAlign: "center" }} as="h2">

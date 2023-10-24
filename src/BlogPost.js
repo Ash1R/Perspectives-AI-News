@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Card, Image, Container, Divider, Header } from "semantic-ui-react";
-import HamburgerMenu from "./hamenu";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import Navbar from "./Navbar";
 
 const BlogPost = ({ title, author, content }) => {
   const url = new URLSearchParams(window.location.search);
@@ -38,7 +38,7 @@ const BlogPost = ({ title, author, content }) => {
       <Header style={{ textAlign: "center", marginTop: "5px" }} size="huge">
         Perspectives
       </Header>
-      <HamburgerMenu></HamburgerMenu>
+      <Navbar activeItem="blog" />
       <Divider></Divider>
       <h2>{blogData.title}</h2>
       <p>{blogData.author}</p>
