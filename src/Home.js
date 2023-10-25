@@ -28,11 +28,13 @@ import Navbar from "./Navbar";
 const App = () => {
   const [value, setValue] = useState("United States");
 
-  const [trigger, setTrigger] = useState(true);
-
   const handleClick = (e, { value }) => {
     setValue(value);
   };
+
+  useEffect(() => {
+    handleSearch(date2, "");
+  }, []);
 
   const languages = ["us", "fr", "ca", "in", "au", "nz", "uk"];
   const map = new Map();
@@ -52,8 +54,7 @@ const App = () => {
     return `${year}-${month}-${day}`;
   }
 
-  const d = new Date();
-  const [date, setDate] = useState(formatDate(d));
+  const d = new Date("2023-09-13");
   const [newsData, setNewsData] = useState([]);
   const [date2, setdate2] = useState(formatDate(d));
 
@@ -71,116 +72,6 @@ const App = () => {
     return description.slice(0, maxLength) + "...";
   };
 
-  const handleSearch_ = async (dat, val) => {
-    const isNumeric = async (str) => {
-      if (typeof str != "string") return false; // we only process strings!
-      return (
-        !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
-        !isNaN(parseFloat(str))
-      ); // ...and ensure strings of whitespace fail
-    };
-    const processObject = async (inputObject) => {
-      let highestValue = -Infinity;
-      let chosenKey = null;
-
-      for (const key in inputObject) {
-        if (inputObject.hasOwnProperty(key)) {
-          const value = inputObject[key];
-
-          if (
-            isNumeric(key) &&
-            Number(key) <= 1 &&
-            Number(key) !== Infinity &&
-            Number(key) > highestValue
-          ) {
-            highestValue = value;
-            chosenKey = key;
-          }
-        }
-      }
-
-      if (chosenKey === null) {
-        return null;
-      }
-
-      const newObject = {
-        cat: inputObject.cat,
-        date: inputObject.date,
-        id: inputObject.id,
-        keyword: inputObject.keyword,
-      };
-
-      const returnObj = { ...newObject, ...inputObject[chosenKey] };
-
-      return returnObj;
-    };
-
-    try {
-      const db = getFirestore();
-      // Create a query to filter documents based on whether the search string is contained in the name field
-      const q = query(collection(db, "topics"), where("date", "==", dat));
-
-      // Execute the query
-      const querySnapshot = await getDocs(q);
-
-      // Process the data and update the search results
-      const results = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      console.log(results);
-      var returnVal = [];
-      for (const result in results) {
-        var inputObject = results[result];
-        let highestValue = -Infinity;
-        let chosenKey = null;
-
-        for (const key in inputObject) {
-          if (inputObject.hasOwnProperty(key)) {
-            const value = inputObject[key];
-
-            if (
-              isNumeric(key) &&
-              Number(key) <= 1 &&
-              Number(key) !== Infinity &&
-              Number(key) > highestValue
-            ) {
-              highestValue = value;
-              chosenKey = key;
-            }
-          }
-        }
-
-        const newObject = {
-          cat: inputObject.cat,
-          date: inputObject.date,
-          id: inputObject.id,
-          keyword: inputObject.keyword,
-        };
-
-        const returnObj = { ...newObject, ...inputObject[chosenKey] };
-        returnVal.push(returnObj);
-      }
-
-      console.log(returnVal);
-
-      const groupedArticles = {};
-
-      returnVal.forEach((article) => {
-        const cate = article.cat;
-        if (!groupedArticles[cate]) {
-          groupedArticles[cate] = [];
-        }
-        groupedArticles[cate].push(article);
-      });
-
-      console.log(groupedArticles);
-
-      setNewsData(groupedArticles);
-    } catch (error) {
-      setSearchResults([]);
-    }
-  };
   const handleSearch = async (dat, val) => {
     const isNumeric = async (str) => {
       if (typeof str != "string") return false; // we only process strings!
@@ -188,41 +79,6 @@ const App = () => {
         !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
         !isNaN(parseFloat(str))
       ); // ...and ensure strings of whitespace fail
-    };
-    const processObject = async (inputObject) => {
-      let highestValue = -Infinity;
-      let chosenKey = null;
-
-      for (const key in inputObject) {
-        if (inputObject.hasOwnProperty(key)) {
-          const value = inputObject[key];
-
-          if (
-            isNumeric(key) &&
-            Number(key) <= 1 &&
-            Number(key) !== Infinity &&
-            Number(key) > highestValue
-          ) {
-            highestValue = value;
-            chosenKey = key;
-          }
-        }
-      }
-
-      if (chosenKey === null) {
-        return null;
-      }
-
-      const newObject = {
-        cat: inputObject.cat,
-        date: inputObject.date,
-        id: inputObject.id,
-        keyword: inputObject.keyword,
-      };
-
-      const returnObj = { ...newObject, ...inputObject[chosenKey] };
-
-      return returnObj;
     };
 
     try {
@@ -303,10 +159,6 @@ const App = () => {
     }
     console.log("does this end");
   };
-  useEffect(() => {
-    handleSearch(date, value);
-    console.log(newsData);
-  }, [date]);
 
   return (
     <Container style={{ backgroundColor: "#f7f9fc" }}>
@@ -372,11 +224,17 @@ const App = () => {
             <Divider />
 
             <Input
-              onBlur={() => setDate(date2)}
               onChange={(e) => setdate2(e.target.value)}
               value={date2}
               label="Date"
             />
+            <Button
+              basic
+              onClick={() => handleSearch(date2, "")}
+              style={{ margin: 5 }}
+            >
+              Get News
+            </Button>
             <Divider hidden />
           </Grid.Column>
         </Grid>
