@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Card, Image, Container, Divider, Header } from "semantic-ui-react";
+import { Container, Divider, Header } from "semantic-ui-react";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import Navbar from "./Navbar";
 
 const BlogPost = ({ title, author, content }) => {
   const url = new URLSearchParams(window.location.search);
-  const id = url.get("id");
+  const idFromQuery = url.get("id");
 
   const [blogData, setBlogData] = useState({ title: "", author: "", text: "" });
 
   useEffect(() => {
     const fetchBlogData = async () => {
       const db = getFirestore();
-      const docRef = doc(db, "blog", id);
+      const docRef = doc(db, "blog", idFromQuery);
 
       try {
         const docSnapshot = await getDoc(docRef);
@@ -31,7 +31,7 @@ const BlogPost = ({ title, author, content }) => {
     };
     fetchBlogData();
     console.log(blogData);
-  }, [id]);
+  }, []);
 
   return (
     <Container>

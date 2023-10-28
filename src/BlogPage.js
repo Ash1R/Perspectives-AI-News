@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Card, Header, Divider } from "semantic-ui-react";
-import BlogPost from "./BlogPost";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
-import {
-  getFirestore,
-  setDoc,
-  doc,
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-} from "firebase/firestore";
+import { Link } from "react-router-dom";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import Navbar from "./Navbar";
 
 const BlogPage = () => {
@@ -47,7 +37,7 @@ const BlogPage = () => {
 
       <Card.Group centered stackable>
         {blogPosts.map((post, index) => (
-          <Link to={"/post?id=" + post.id}>
+          <Link to={"/post?id=" + post.id} key={index}>
             <Card>
               <Card.Content>{post.title}</Card.Content>
             </Card>

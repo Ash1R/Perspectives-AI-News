@@ -59,7 +59,6 @@ const App = () => {
   const [newsData, setNewsData] = useState([]);
   const [date2, setdate2] = useState(d);
 
-  const [searchString, setSearchString] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
   const truncateDescription = (description, maxLength) => {
@@ -100,7 +99,7 @@ const App = () => {
       var returnVal = [];
       for (const result in results) {
         var inputObject = results[result];
-        console.log(inputObject);
+        //console.log(inputObject);
         let highestValue = -Infinity;
         let chosenKey = "inf";
         let highestnon = -1;
@@ -127,7 +126,7 @@ const App = () => {
         if (highestnon != -1 && chosenKey == "inf") {
           chosenKey = highestnon;
         }
-        console.log(chosenKey);
+        //console.log(chosenKey);
 
         const newObject = {
           cat: inputObject.cat,
@@ -140,7 +139,7 @@ const App = () => {
         returnVal.push(returnObj);
       }
 
-      console.log(returnVal);
+      //console.log(returnVal);
 
       const groupedArticles = {};
 
@@ -152,7 +151,7 @@ const App = () => {
         groupedArticles[cate].push(article);
       });
 
-      console.log(groupedArticles);
+      //console.log(groupedArticles);
       setNewsData([]);
       setNewsData(groupedArticles);
     } catch (error) {

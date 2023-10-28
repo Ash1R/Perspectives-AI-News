@@ -10,6 +10,7 @@ import {
   Divider,
   Image,
   Segment,
+  Placeholder,
 } from "semantic-ui-react";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import Navbar from "./Navbar";
@@ -17,28 +18,17 @@ import Navbar from "./Navbar";
 const Analysis = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const id = queryParams.get("id");
+  const idFromQuery = queryParams.get("id");
 
-  const [data, setData] = useState({ keyword: "filler" });
+  const [data, setData] = useState(null);
   const [categorizedData, setCategorizedData] = useState([]);
-
-  const truncateDescription = (description, maxLength) => {
-    console.log(description);
-    if (description == null) {
-      return "";
-    }
-    if (description.length <= maxLength) {
-      return description;
-    }
-    return description.slice(0, maxLength) + "...";
-  };
 
   useEffect(() => {
     const db = getFirestore();
 
     const fetchData = async () => {
       try {
-        const docRef = doc(db, "topics", id);
+        const docRef = doc(db, "topics", idFromQuery);
         const docSnapshot = await getDoc(docRef);
 
         if (docSnapshot.exists()) {
@@ -52,7 +42,7 @@ const Analysis = () => {
     };
 
     fetchData();
-  }, [id]);
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -83,7 +73,6 @@ const Analysis = () => {
           categorized.push({ key, value: data[key], category });
         }
       }
-      console.log(categorized);
       const categorizedNews = {
         Unopinionated: [],
         "Mildly Opinionated": [],
@@ -94,80 +83,97 @@ const Analysis = () => {
         const { category } = newsItem;
         categorizedNews[category].push(newsItem);
       });
-      console.log(categorizedNews);
-      console.log(categorizedNews["Unopinionated"]);
+
       setCategorizedData(categorizedNews);
     }
   }, [data]);
 
   return (
-    <Container>
-      <Header textAlign="center" style={{ marginTop: "20px" }} size="huge">
-        Perspectives
-      </Header>
-      <Navbar />
-      <Divider />
+    <>
+      {data && (
+        <Container>
+          <Header textAlign="center" style={{ marginTop: "20px" }} size="huge">
+            Perspectives
+          </Header>
+          <Navbar />
+          <Divider />
 
-      <Header style={{ textAlign: "center" }} as="h2">
-        The Algorithm Detected a Topic: {data["keyword"]}
-      </Header>
+          <Header style={{ textAlign: "center" }} as="h2">
+            The Algorithm Detected a Topic: {data["keyword"]}
+          </Header>
 
-      <Header style={{ textAlign: "center", margin: "20px 0" }} as="h4">
-        Here Are the Different Perspectives
-      </Header>
+          <Header style={{ textAlign: "center", margin: "20px 0" }} as="h4">
+            Here Are the Different Perspectives
+          </Header>
 
-      <Divider hidden />
+          <Divider hidden />
 
-      <Grid columns={4} stackable centered>
-        {[
-          "Opinionated",
-          "Mildly Opinionated",
-          "Unopinionated",
-          "Unable to categorize",
-        ].map((category) => (
-          <Grid.Column key={category} style={{ maxWidth: "400px" }}>
-            <Segment>
-              <Header textAlign="center">{category}</Header>
+          <Grid columns={4} stackable centered>
+            {[
+              "Opinionated",
+              "Mildly Opinionated",
+              "Unopinionated",
+              "Unable to categorize",
+            ].map((category) => (
+              <Grid.Column key={category} style={{ maxWidth: "400px" }}>
+                <Segment>
+                  <Header textAlign="center">{category}</Header>
 
-              {categorizedData[category] ? (
-                categorizedData[category].map((newsItem, index) => (
-                  <Container key={index}>
-                    <Divider />
-                    <h4 style={{ color: "gray" }}>
-                      Opinion score: {newsItem["key"]}
-                    </h4>
-                    <Divider hidden />
-                    <a
-                      href={newsItem["value"]["url"]}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Card style={{ margin: "auto", width: "100%" }}>
-                        <Image
-                          src={newsItem["value"]["urlToImage"]}
-                          wrapped
-                          ui={false}
-                        />
-                        <Card.Content>
-                          <Card.Header>
-                            {newsItem["value"]["title"]}
-                          </Card.Header>
-                          <Card.Description>
-                            {newsItem["value"]["description"]}
-                          </Card.Description>
-                        </Card.Content>
-                      </Card>
-                    </a>
-                  </Container>
-                ))
-              ) : (
-                <Loader active>Loading...</Loader>
-              )}
-            </Segment>
-          </Grid.Column>
-        ))}
-      </Grid>
-    </Container>
+                  {categorizedData[category] ? (
+                    categorizedData[category].map((newsItem, index) => (
+                      <Container key={index}>
+                        <Divider />
+                        <h4 style={{ color: "gray" }}>
+                          Opinion score: {newsItem["key"]}
+                        </h4>
+                        <Divider hidden />
+                        <a
+                          href={newsItem["value"]["url"]}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Card style={{ margin: "auto", width: "100%" }}>
+                            <Image
+                              src={newsItem["value"]["urlToImage"]}
+                              wrapped
+                              ui={false}
+                            />
+                            <Card.Content>
+                              <Card.Header>
+                                {newsItem["value"]["title"]}
+                              </Card.Header>
+                              <Card.Description>
+                                {newsItem["value"]["description"]}
+                              </Card.Description>
+                            </Card.Content>
+                          </Card>
+                        </a>
+                      </Container>
+                    ))
+                  ) : (
+                    <Loader active>Loading...</Loader>
+                  )}
+                </Segment>
+              </Grid.Column>
+            ))}
+          </Grid>
+        </Container>
+      )}
+      {!data && (
+        <Placeholder>
+          <Placeholder.Header image>
+            <Placeholder.Line />
+            <Placeholder.Line />
+          </Placeholder.Header>
+          <Placeholder.Paragraph>
+            <Placeholder.Line />
+            <Placeholder.Line />
+            <Placeholder.Line />
+            <Placeholder.Line />
+          </Placeholder.Paragraph>
+        </Placeholder>
+      )}
+    </>
   );
 };
 export default Analysis;
