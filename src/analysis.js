@@ -6,26 +6,12 @@ import {
   Grid,
   Card,
   Loader,
-  Message,
   Header,
   Divider,
   Image,
-  Table,
-  Menu,
   Segment,
 } from "semantic-ui-react";
-import {
-  getFirestore,
-  setDoc,
-  getDoc,
-  doc,
-  collection,
-  query,
-  where,
-  getDocs,
-  orderBy,
-} from "firebase/firestore";
-import { initializeApp } from "firebase/app";
+import { getFirestore, getDoc, doc } from "firebase/firestore";
 import Navbar from "./Navbar";
 
 const Analysis = () => {

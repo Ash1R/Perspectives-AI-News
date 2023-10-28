@@ -58,9 +58,6 @@ const App = () => {
   const d = new Date("2023-09-13");
   const [newsData, setNewsData] = useState([]);
   const [date2, setdate2] = useState(d);
-  useEffect(() => {
-    console.log("Date set is ", date2);
-  }, [date2]);
 
   const [searchString, setSearchString] = useState("");
   const [searchResults, setSearchResults] = useState([]);
