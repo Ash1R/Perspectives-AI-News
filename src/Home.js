@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "semantic-ui-css/semantic.min.css";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./datepicker.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import {
   Container,
   Grid,
-  Input,
   Dropdown,
   Header,
   Divider,
@@ -14,13 +16,10 @@ import {
 } from "semantic-ui-react";
 import {
   getFirestore,
-  setDoc,
-  doc,
   collection,
   query,
   where,
   getDocs,
-  orderBy,
 } from "firebase/firestore";
 import "./styles.css"; // Import the CSS file you created
 import Navbar from "./Navbar";
@@ -54,15 +53,20 @@ const App = () => {
     return `${year}-${month}-${day}`;
   }
 
+  const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
+
   const d = new Date("2023-09-13");
   const [newsData, setNewsData] = useState([]);
-  const [date2, setdate2] = useState(formatDate(d));
+  const [date2, setdate2] = useState(d);
+  useEffect(() => {
+    console.log("Date set is ", date2);
+  }, [date2]);
 
   const [searchString, setSearchString] = useState("");
   const [searchResults, setSearchResults] = useState([]);
 
   const truncateDescription = (description, maxLength) => {
-    console.log(description);
+    //console.log(description);
     if (description == null) {
       return "";
     }
@@ -72,7 +76,8 @@ const App = () => {
     return description.slice(0, maxLength) + "...";
   };
 
-  const handleSearch = async (dat, val) => {
+  const handleSearch = async (d, val) => {
+    const dat = formatDate(d);
     const isNumeric = async (str) => {
       if (typeof str != "string") return false; // we only process strings!
       return (
@@ -94,7 +99,7 @@ const App = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      console.log(results);
+      console.log("Results:::", results);
       var returnVal = [];
       for (const result in results) {
         var inputObject = results[result];
@@ -170,11 +175,47 @@ const App = () => {
         <Divider />
 
         <Grid columns={3} stackable>
+          <Grid.Column computer={4}>
+            <Header as="h2" color="blue">
+              Settings
+            </Header>
+            <Divider />
+
+            <label style={{ color: "gray" }}>Country (coming soon!):</label>
+            <Dropdown
+              text={map.get(value)}
+              value={value}
+              onChange={handleClick}
+              options={languages.map((lang) => ({
+                key: lang,
+                value: lang,
+                flag: lang,
+                text: map.get(lang),
+              }))}
+            />
+
+            <Divider />
+
+            <DatePicker
+              wrapperClassName="datePicker"
+              selected={date2}
+              onChange={(date) => setdate2(date)}
+            />
+            <Button
+              basic
+              size="mini"
+              onClick={() => handleSearch(date2, "")}
+              style={{ margin: 5 }}
+            >
+              Get News
+            </Button>
+            <Divider hidden />
+          </Grid.Column>
           <Grid.Column computer={12}>
             {Object.entries(newsData).map(([category, articles]) => (
               <div key={category}>
                 <Header as="h2" color="blue">
-                  {category}
+                  {capitalize(category)}
                 </Header>
                 <Grid columns={2} stackable doubling>
                   {articles.map((article) => (
@@ -200,42 +241,6 @@ const App = () => {
                 <Divider />
               </div>
             ))}
-          </Grid.Column>
-
-          <Grid.Column computer={4}>
-            <Header as="h2" color="purple">
-              Settings
-            </Header>
-            <Divider />
-
-            <label style={{ color: "gray" }}>Country (coming soon!):</label>
-            <Dropdown
-              text={map.get(value)}
-              value={value}
-              onChange={handleClick}
-              options={languages.map((lang) => ({
-                key: lang,
-                value: lang,
-                flag: lang,
-                text: map.get(lang),
-              }))}
-            />
-
-            <Divider />
-
-            <Input
-              onChange={(e) => setdate2(e.target.value)}
-              value={date2}
-              label="Date"
-            />
-            <Button
-              basic
-              onClick={() => handleSearch(date2, "")}
-              style={{ margin: 5 }}
-            >
-              Get News
-            </Button>
-            <Divider hidden />
           </Grid.Column>
         </Grid>
       </Container>
