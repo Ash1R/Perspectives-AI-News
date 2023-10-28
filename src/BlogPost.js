@@ -17,7 +17,6 @@ const BlogPost = ({ title, author, content }) => {
       try {
         const docSnapshot = await getDoc(docRef);
         if (docSnapshot.exists()) {
-          console.log("yes!");
           let x = docSnapshot.data();
           x.text = x.text.replace(/\\n/g, "\n");
           setBlogData(x);
@@ -30,7 +29,6 @@ const BlogPost = ({ title, author, content }) => {
       }
     };
     fetchBlogData();
-    console.log(blogData);
   }, []);
 
   return (
