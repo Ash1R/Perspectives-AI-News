@@ -10,10 +10,10 @@ import {
   Divider,
   Image,
   Segment,
-  Placeholder,
 } from "semantic-ui-react";
 import { getFirestore, getDoc, doc } from "firebase/firestore";
 import Navbar from "./Navbar";
+import ArticlePlaceholder from "./ArticlePlaceholder";
 
 const Analysis = () => {
   const location = useLocation();
@@ -159,20 +159,7 @@ const Analysis = () => {
           </Grid>
         </Container>
       )}
-      {!data && (
-        <Placeholder>
-          <Placeholder.Header image>
-            <Placeholder.Line />
-            <Placeholder.Line />
-          </Placeholder.Header>
-          <Placeholder.Paragraph>
-            <Placeholder.Line />
-            <Placeholder.Line />
-            <Placeholder.Line />
-            <Placeholder.Line />
-          </Placeholder.Paragraph>
-        </Placeholder>
-      )}
+      {!data && <ArticlePlaceholder />}
     </>
   );
 };

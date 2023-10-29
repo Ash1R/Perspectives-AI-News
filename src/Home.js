@@ -3,7 +3,7 @@ import "semantic-ui-css/semantic.min.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./datepicker.css";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Container,
   Grid,
@@ -11,8 +11,8 @@ import {
   Header,
   Divider,
   Image,
-  Button,
   Card,
+  Placeholder,
 } from "semantic-ui-react";
 import {
   getFirestore,
@@ -23,6 +23,7 @@ import {
 } from "firebase/firestore";
 import "./styles.css"; // Import the CSS file you created
 import Navbar from "./Navbar";
+import ArticlePlaceholder from "./ArticlePlaceholder";
 
 const App = () => {
   const [value, setValue] = useState("United States");
@@ -30,10 +31,6 @@ const App = () => {
   const handleClick = (e, { value }) => {
     setValue(value);
   };
-
-  useEffect(() => {
-    handleSearch(date2, "");
-  }, []);
 
   const languages = ["us", "fr", "ca", "in", "au", "nz", "uk"];
   const map = new Map();
@@ -56,10 +53,15 @@ const App = () => {
   const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
   const d = new Date("2023-09-13");
-  const [newsData, setNewsData] = useState([]);
+  // null newsdata means nothing is known and show placeholder.
+  // [] means an empty result was returned.
+  const [newsData, setNewsData] = useState(null);
   const [date2, setdate2] = useState(d);
 
-  const [searchResults, setSearchResults] = useState([]);
+  useEffect(() => {
+    setNewsData(null);
+    handleSearch(date2, "");
+  }, [date2]);
 
   const truncateDescription = (description, maxLength) => {
     //console.log(description);
@@ -152,11 +154,10 @@ const App = () => {
       });
 
       //console.log(groupedArticles);
-      setNewsData([]);
+      //setNewsData([]);
       setNewsData(groupedArticles);
     } catch (error) {
       console.log("failed to set data");
-      setSearchResults([]);
     }
     console.log("does this end");
   };
@@ -193,51 +194,58 @@ const App = () => {
             <Divider />
 
             <DatePicker
+              showIcon
               wrapperClassName="datePicker"
               selected={date2}
               onChange={(date) => setdate2(date)}
             />
-            <Button
-              basic
-              size="mini"
-              onClick={() => handleSearch(date2, "")}
-              style={{ margin: 5 }}
-            >
-              Get News
-            </Button>
             <Divider hidden />
           </Grid.Column>
-          <Grid.Column computer={12}>
-            {Object.entries(newsData).map(([category, articles]) => (
-              <div key={category}>
-                <Header as="h2" color="blue">
-                  {capitalize(category)}
-                </Header>
-                <Grid columns={2} stackable doubling>
-                  {articles.map((article) => (
-                    <Grid.Column key={article.title}>
-                      <Link to={`/analysis?id=${article.id}`}>
-                        <Card fluid>
-                          <Image
-                            src={article.urlToImage}
-                            alt={"image blocked"}
-                          />
-                          <Card.Content>
-                            <Card.Header>{article.title}</Card.Header>
-                            <Card.Meta>{article.author}</Card.Meta>
-                            <Card.Description>
-                              {truncateDescription(article.description, 50)}
-                            </Card.Description>
-                          </Card.Content>
-                        </Card>
-                      </Link>
-                    </Grid.Column>
-                  ))}
-                </Grid>
-                <Divider />
-              </div>
-            ))}
-          </Grid.Column>
+          {!newsData && <Placeholder />}
+          {newsData && Object.keys(newsData).length === 0 && (
+            <Card>
+              <Card.Content header="No data found!" />
+              <Card.Content
+                description={
+                  "Unfortunately no data found for this date " +
+                  formatDate(date2)
+                }
+              />
+            </Card>
+          )}
+          {newsData && Object.keys(newsData).length > 0 && (
+            <Grid.Column computer={12}>
+              {Object.entries(newsData).map(([category, articles]) => (
+                <div key={category}>
+                  <Header as="h2" color="blue">
+                    {capitalize(category)}
+                  </Header>
+                  <Grid columns={2} stackable doubling>
+                    {articles.map((article) => (
+                      <Grid.Column key={article.title}>
+                        <Link to={`/analysis?id=${article.id}`}>
+                          <Card fluid>
+                            <Image
+                              src={article.urlToImage}
+                              alt={"image blocked"}
+                            />
+                            <Card.Content>
+                              <Card.Header>{article.title}</Card.Header>
+                              <Card.Meta>{article.author}</Card.Meta>
+                              <Card.Description>
+                                {truncateDescription(article.description, 50)}
+                              </Card.Description>
+                            </Card.Content>
+                          </Card>
+                        </Link>
+                      </Grid.Column>
+                    ))}
+                  </Grid>
+                  <Divider />
+                </div>
+              ))}
+            </Grid.Column>
+          )}
         </Grid>
       </Container>
     </Container>
