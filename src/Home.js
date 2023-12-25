@@ -26,21 +26,16 @@ import Navbar from "./Navbar";
 import ArticlePlaceholder from "./ArticlePlaceholder";
 
 const App = () => {
-  const [value, setValue] = useState("United States");
+  const [value, setValue] = useState("us");
 
   const handleClick = (e, { value }) => {
     setValue(value);
   };
 
-  const languages = ["us", "fr", "ca", "in", "au", "nz", "uk"];
+  const languages = ["us", "fr"];
   const map = new Map();
   map.set("us", "United States");
-  map.set("fr", "France");
-  map.set("ca", "Canada (beta, English)");
-  map.set("uk", "United Kingdom (beta)");
-  map.set("au", "Australia (beta)");
-  map.set("nz", "New Zealand (beta)");
-  map.set("in", "India (beta, English)");
+  map.set("fr", "France (may contain some English articles)");
 
   function formatDate(date) {
     const year = date.getUTCFullYear();
@@ -52,7 +47,7 @@ const App = () => {
 
   const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
-  const d = new Date("2023-09-13");
+  const d = new Date();
   // null newsdata means nothing is known and show placeholder.
   // [] means an empty result was returned.
   const [newsData, setNewsData] = useState(null);
@@ -61,7 +56,7 @@ const App = () => {
   useEffect(() => {
     setNewsData(null);
     handleSearch(date2, "");
-  }, [date2]);
+  }, [date2, value]);
 
   const truncateDescription = (description, maxLength) => {
     //console.log(description);
@@ -87,7 +82,16 @@ const App = () => {
     try {
       const db = getFirestore();
       // Create a query to filter documents based on whether the search string is contained in the name field
-      const q = query(collection(db, "topics"), where("date", "==", dat));
+      const searchmap = new Map();
+      searchmap.set("United States", "us");
+      searchmap.set("France", "fr");
+      console.log(value);
+      console.log(searchmap.get(value));
+      const q = query(
+        collection(db, "topics"),
+        where("date", "==", dat),
+        where("country", "==", value)
+      );
 
       // Execute the query
       const querySnapshot = await getDocs(q);
@@ -157,6 +161,7 @@ const App = () => {
       //setNewsData([]);
       setNewsData(groupedArticles);
     } catch (error) {
+      console.log(error);
       console.log("failed to set data");
     }
     console.log("does this end");
