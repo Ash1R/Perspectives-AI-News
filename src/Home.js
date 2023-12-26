@@ -38,9 +38,9 @@ const App = () => {
   map.set("fr", "France (may contain some English articles)");
 
   function formatDate(date) {
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Month is zero-based
-    const day = String(date.getUTCDate()).padStart(2, "0");
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is zero-based
+    const day = String(date.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
   }
@@ -48,10 +48,17 @@ const App = () => {
   const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
   const d = new Date();
+
+  const pstd = new Date(
+    d.toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles",
+    })
+  );
+  console.log(pstd);
   // null newsdata means nothing is known and show placeholder.
   // [] means an empty result was returned.
   const [newsData, setNewsData] = useState(null);
-  const [date2, setdate2] = useState(d);
+  const [date2, setdate2] = useState(pstd);
 
   useEffect(() => {
     setNewsData(null);
@@ -70,7 +77,9 @@ const App = () => {
   };
 
   const handleSearch = async (d, val) => {
-    const dat = formatDate(d);
+    console.log(pstd);
+    const dat = formatDate(pstd);
+    console.log(dat);
     const isNumeric = async (str) => {
       if (typeof str != "string") return false; // we only process strings!
       return (
