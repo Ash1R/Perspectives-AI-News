@@ -45,20 +45,20 @@ const App = () => {
     return `${year}-${month}-${day}`;
   }
 
+  function convertDateToPST(date) {
+    return new Date(
+      date.toLocaleString("en-US", {
+        timeZone: "America/Los_Angeles",
+      })
+    );
+  }
+
   const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
-  const d = new Date();
-
-  const pstd = new Date(
-    d.toLocaleString("en-US", {
-      timeZone: "America/Los_Angeles",
-    })
-  );
-  console.log(pstd);
   // null newsdata means nothing is known and show placeholder.
   // [] means an empty result was returned.
   const [newsData, setNewsData] = useState(null);
-  const [date2, setdate2] = useState(pstd);
+  const [date2, setdate2] = useState(convertDateToPST(new Date()));
 
   useEffect(() => {
     setNewsData(null);
@@ -77,8 +77,7 @@ const App = () => {
   };
 
   const handleSearch = async (d, val) => {
-    console.log(pstd);
-    const dat = formatDate(pstd);
+    const dat = formatDate(d);
     console.log(dat);
     const isNumeric = async (str) => {
       if (typeof str != "string") return false; // we only process strings!
@@ -211,7 +210,7 @@ const App = () => {
               showIcon
               wrapperClassName="datePicker"
               selected={date2}
-              onChange={(date) => setdate2(date)}
+              onChange={(date) => setdate2(convertDateToPST(date))}
             />
             <Divider hidden />
           </Grid.Column>
